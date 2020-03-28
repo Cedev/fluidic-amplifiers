@@ -371,7 +371,7 @@ ARGQV1=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
 QV1DOT=(E>0)*ARGQV1
 Vprime=CONV*(QC1-QE1+QR1+QV1)/B02
 if ~isreal(Vprime) then
-    disp(Vprime,QC1,QE1,QR1,QV1,B02)
+    disp("Unreal bubble volume change", Vprime,QC1,QE1,QR1,QV1,B02)
     RT=1
 end
 QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV*B02)
@@ -393,5 +393,5 @@ QO2=QO2+DELT*QO2prime
 LSP=2*SB
 if ~(LSP < SPL) then
     RT=1
-    disp(V,THETA,R,QC1,QC2,QV1,QS)
+    disp("LSP < SPL", V,THETA,R,QC1,QC2,QV1,QS)
 end

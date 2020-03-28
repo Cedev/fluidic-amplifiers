@@ -60,6 +60,11 @@ if ~(TIME > 0) then
     IT=0
 end
 
+if (PAV < 0) then
+    disp("Negative PAV", PAV, PB2, QS, R0)
+    RT = 1 
+end
+
 // START CALC OF DISCHARGE COEFF AND MIN RESISTANCES
 
 REC1=abs(QC1*RE)
@@ -134,7 +139,7 @@ BETA=atan((FC1-FC2)/FSY)
 GAM=(ALPH+BETA)
 SG=sin(GAM)
 CG=cos(GAM)
-VCL=V+0.5*R*R*(XI2-sin(XI2))
+VCL=V+0.5*R*R*(XI2-sin(XI2)) // Eq 35
 B2=A2^2/(2*VCL+A2*A4)
 
 // START IMPLICIT ROUTINE FOR ATTACHMENT ANGLE THETA
@@ -147,16 +152,26 @@ function GAD=gad(THETA)
     GAD=abs(SAD)
 endfunction
 
-[THETA]=fsolve(THETA0,gad,1.0E-06)
+epsilon=1.0E-03
+[THETA]=fsolve(THETA0,gad,epsilon)
 ST=sin(THETA)
 CT=cos(THETA)
 
+if (abs(gad(THETA)) > epsilon ) then
+    disp("No solution for theta")
+    disp("B2", B2, V, VCL, R, XI2, A2, A4)
+    disp("Angles", ALPH, BETA, GAM, THETA)
+    xs = linspace(-%pi, %pi, 300)
+    plot2d(xs, gad(xs))
+    RT = 1
+end
+
 // START CALC OF GEOMETRIC VARIABLES
 
-R=A2/(CG-CT)
-S1=R*(GAM+THETA)
+R=A2/(CG-CT)      // Eq 22
+S1=R*(GAM+THETA)  // Eq 23
 if (S1 < 0) then
-    disp("Negative S1", S1, R, GAM, THETA)
+    disp("Negative jet arc length S1", S1, R, GAM, THETA, gad(THETA))
     RT=1
 end
 SB=R*sin(BETA)
@@ -325,6 +340,11 @@ PB2=PB1+DELPB
 PAV=0.5*(PB1+PB2)
 PSY=0.5*(PAV+PB2)
 
+if (PAV < 0) then
+    disp("Negative PAV", PAV, PB1, PB2, QS, UE2, PLEVEL)
+    RT = 1 
+end
+
 // START CALC OF INPUT RAMP GRADIENT
 
 if ~(TIME < FINTIM/2) then
@@ -393,5 +413,5 @@ QO2=QO2+DELT*QO2prime
 LSP=2*SB
 if ~(LSP < SPL) then
     RT=1
-    disp("LSP < SPL", V,THETA,R,QC1,QC2,QV1,QS)
+    disp("LSP >= SPL", V,THETA,R,QC1,QC2,QV1,QS)
 end

@@ -52,6 +52,7 @@ CDMIN=.6
 
 
 // LOOP
+clf()
 DELT=FINTIM/3000
 TIME=0
 RT=0

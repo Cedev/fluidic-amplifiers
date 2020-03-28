@@ -58,7 +58,7 @@ RT=0
 x=[]
 y=[]
 while TIME<FINTIM && RT==0 do
-    exec("dsl90.sce", -1)
+    exec("amplifier_simulation.sce", -1)
     x=cat(1,x,[TIME])
     y=cat(1,y,[Z2,POUT1,POUT2])
     TIME=TIME+DELT

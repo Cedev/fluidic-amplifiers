@@ -4,7 +4,7 @@ endfunction
 
 if ~(TIME > 0) then
     // R0 is undefined
-    R0 = 10E5
+    R0 = D
     // Undefined variable: R
     R = R0
 
@@ -58,11 +58,6 @@ if ~(TIME > 0) then
     RT=0
     PLEVEL=PLEVEL0
     IT=0
-end
-
-if (PAV < 0) then
-    disp("Negative PAV", PAV, PB2, QS, R0)
-    RT = 1 
 end
 
 // START CALC OF DISCHARGE COEFF AND MIN RESISTANCES
@@ -144,6 +139,7 @@ B2=A2^2/(2*VCL+A2*A4)
 
 // START IMPLICIT ROUTINE FOR ATTACHMENT ANGLE THETA
 
+/*
 function GAD=gad(THETA)
     ST=sin(THETA)
     CT=cos(THETA)
@@ -165,10 +161,44 @@ if (abs(gad(THETA)) > epsilon ) then
     plot2d(xs, gad(xs))
     RT = 1
 end
+*/
+
+// Implicit routine for radius of jet curvature
+
+function ba=bubble_area(r)
+    // See diagram on page 14
+    // x = A2/CG
+    // theta = acos((r-x)*CG/r)
+    // theta = acos((r-A2/CG)*CG/r)
+    wedge_length = A2/CG
+    theta = acos(CG-A2*r^-1)
+    wedge_area = 0.5*sin(BETA)*(D + 0.5)*wedge_length
+    outside_area = 0.5*(r-wedge_length).*r.*sin(GAM+theta)
+    ba = 0.5*r^2.*(GAM+theta) + wedge_area - outside_area
+endfunction
+
+function ea=extra_area(r)
+    ea=bubble_area(r)-VCL
+endfunction
+
+epsilon=1.0E-06
+[R]=fsolve(R0,extra_area,epsilon)
+THETA=acos(CG-A2/R)
+ST=sin(THETA)
+CT=cos(THETA)
+
+if (abs(extra_area(R)) > epsilon ) then
+    disp("No solution for R")
+    disp("TIME", TIME)
+    disp("R", R, XI2, A2, CG, VCL, bubble_area(R))
+    disp("Angles", ALPH, BETA, GAM, THETA)
+    //xs = linspace(0, 100, 300)
+    //plot2d(xs, bubble_area(xs))
+end
 
 // START CALC OF GEOMETRIC VARIABLES
 
-R=A2/(CG-CT)      // Eq 22
+// R=A2/(CG-CT)      // Eq 22
 S1=R*(GAM+THETA)  // Eq 23
 if (S1 < 0) then
     disp("Negative jet arc length S1", S1, R, GAM, THETA, gad(THETA))
@@ -339,11 +369,6 @@ DELPB=2*QS2/R
 PB2=PB1+DELPB
 PAV=0.5*(PB1+PB2)
 PSY=0.5*(PAV+PB2)
-
-if (PAV < 0) then
-    disp("Negative PAV", PAV, PB1, PB2, QS, UE2, PLEVEL)
-    RT = 1 
-end
 
 // START CALC OF INPUT RAMP GRADIENT
 

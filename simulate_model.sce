@@ -36,7 +36,7 @@ while TIME<FINTIM && RT==0 do
     pressures=cat(1,pressures,[PC1,PC2,POUT1,POUT2,BETA,PDOUT1,PDOUT2])
     flows=cat(1,flows,[QS, QC1, QC2, QO1, QO2, QV1, QV2])
     internal_pressures=cat(1,internal_pressures,[PSY,P1B,P2B,PAV,PLEVEL,PD1,PD2])
-    lengths=cat(1,lengths,[BETA,XAP,LSP])
+    lengths=cat(1,lengths,[S1,XAP,LSP])
     TIME=TIME+DELT
 end
 scf(0)
@@ -54,4 +54,4 @@ legend("PSY", "P1B", "P2B", "PAV", "PLEVEL", "PD1", "PD2", -1)
 scf(3)
 clf()
 plot2d(times, lengths)
-legend("BETA", "XAP", "LSP")
+legend("S1", "XAP", "LSP", -1)

@@ -460,3 +460,7 @@ if ~(LSP < SPL) then
     RT=1
     disp("LSP >= SPL",TIME,V,THETA,R,QC1,QC2,QV1,QS)
 end
+
+if (LSP < -SPL) then
+    LSP = -SPL
+end

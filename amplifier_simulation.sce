@@ -96,7 +96,7 @@ if ~(TIME < FINTIM/2) then
         TINCON=TIME
         CLOSE1=POST1
         CLOSE2=POST2
-        disp(V,THETA,R,QC1,QC2,QV1,QS)
+        disp("FINTIM/2", V,THETA,R,QC1,QC2,QV1,QS)
     end
 end
 
@@ -112,7 +112,7 @@ end
 
 //  END CALC OF PRESSURE LEVEL
 
-TNOND=(TIME-TINCON)/TAUTR
+TNOND=(TIME-FINTIM/2)/TAUTR
 Z2=1*(TIME>=T2) // STEP(T2)
 
 // START CALC FOR JET DEFLECTION
@@ -139,7 +139,7 @@ GAM=(ALPH+BETA)
 SG=sin(GAM)
 CG=cos(GAM)
 VCL=V+0.5*R*R*(XI2-sin(XI2)) // Eq 35
-B2=A2^2/(2*VCL+A2*A4)
+// B2=A2^2/(2*VCL+A2*A4)
 
 // START IMPLICIT ROUTINE FOR ATTACHMENT ANGLE THETA
 
@@ -293,7 +293,7 @@ DYC=-CB+ROOT8 // Eq 47
 RC1D=1/((KC+DYC)^2+1.0E-5)
 RC2D=1/((KC-DYC)^2+1.0E-5)
 
-if RC1D >= RCMIN2 && RC1D <= RCMAX then // sic/RCMIN/RCMIN1
+if RC1D >= RCMIN1 && RC1D <= RCMAX then // sic/RCMIN/RCMIN1
     RC1=RC1D
 end
 if RC1D > RCMAX then
@@ -441,7 +441,7 @@ if ~isreal(Vprime) then
 end
 QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV*B02)
 QO1prime=CONV*(PD1+PB2-PO1-RO1*QO1*abs(QO1))/(LO*B02)
-QO2prime=CONV*(PO2+PD2-PB2-RO2*QO2*abs(QO2))/(LO*B02)
+QO2prime=CONV*(PO2-PD2-PB2-RO2*QO2*abs(QO2))/(LO*B02)
 
 // Not Milne integration :(
 QS=QS+DELT*QSprime

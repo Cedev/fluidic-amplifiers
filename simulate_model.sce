@@ -32,7 +32,7 @@ while TIME<FINTIM && RT==0 do
     end
     */
     exec("amplifier_simulation.sce", -1)
-    times=cat(1,times,[TIME])
+    times=cat(1,times,[TNOND])
     pressures=cat(1,pressures,[PC1,PC2,POUT1,POUT2,BETA,PDOUT1,PDOUT2])
     flows=cat(1,flows,[QS, QC1, QC2, QO1, QO2, QV1, QV2])
     internal_pressures=cat(1,internal_pressures,[PSY,P1B,P2B,PAV,PLEVEL,PD1,PD2])

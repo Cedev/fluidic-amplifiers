@@ -26,7 +26,7 @@ clear('L', 'P0', 'CS')
 clear('D', 'B0', 'BC', 'ALPH', 'XV1', 'LGTHC', 'AREAC', 'LGTHS', 'AREAS', 'LGTHV', 'AREAV', 'SPL', 'LGTHR')
 
 // PARAM - control
-clear('pre1','pre2','post1','post2','p1','p2','')
+clear('pre1','pre2','post1','post2','p1','p2')
 TRISE=1E-3
 P1BIAS=0
 P2BIAS=0

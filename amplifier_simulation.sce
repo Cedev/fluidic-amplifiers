@@ -263,7 +263,7 @@ T=2*cos((2*%pi-acos(-B/2))/3)
 if L>0 then
     SUM1=S1+S0
     SUM1=S1+S0 // [sic]?
-    CBR=(QSZ/RE)^(1/3)
+    CBR=(QS2/RE)^(1/3)
     QR1=C3*CBR*SUM1^(1/3)*(1-T)
     QE1=C3*CBR*SUM1^(1/3)-0.5*QS
     SEM=S0*(sqrt(27)-1)

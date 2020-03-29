@@ -25,8 +25,8 @@ POST2=1
 D=0.905
 P0=10
 CS=0.85
-P1=0
-P2=0.5
+P1=0.5
+P2=0
 B0=2.1E-3
 BC=1
 ALPH=.20944
@@ -52,16 +52,24 @@ CDMIN=.6
 
 
 // LOOP
-clf()
 DELT=FINTIM/3000
 TIME=0
 RT=0
-x=[]
-y=[]
+times=[]
+pressures=[]
+flows=[]
 while TIME<FINTIM && RT==0 do
     exec("amplifier_simulation.sce", -1)
-    x=cat(1,x,[TIME])
-    y=cat(1,y,[Z2,POUT1,POUT2])
+    times=cat(1,times,[TIME])
+    pressures=cat(1,pressures,[PC1,PC2,POUT1,POUT2, BETA])
+    flows=cat(1,flows,[QS, QC1, QC2, QO1, QO2, QV1, QV2])
     TIME=TIME+DELT
 end
-plot2d(x, y)
+scf(0)
+clf()
+plot2d(times, pressures)
+legend("PC1", "PC2", "POUT1", "POUT2", "BETA", -1)
+scf(1)
+clf()
+plot2d(times, flows)
+legend("QS", "QC1", "QC2", "QO1", "QO2", "QV1", "QV2", -1)

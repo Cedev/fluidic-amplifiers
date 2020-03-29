@@ -96,7 +96,7 @@ if ~(TIME < FINTIM/2) then
         TINCON=TIME
         CLOSE1=POST1
         CLOSE2=POST2
-        disp("FINTIM/2", V,THETA,R,QC1,QC2,QV1,QS)
+        disp("FINTIM/2", V,THETA,R,QC1,QC2,QV1,QS,PDOUT1,PDOUT2)
     end
 end
 

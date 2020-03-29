@@ -50,6 +50,22 @@ CDMAX=.9
 CDMIN=.6
 
 
+function check_nan_variable(name)
+    [obj, ierr] = evstr(name)
+    if ierr == 0 then
+        if isnan(obj) then
+            disp("NaN variable", name, obj)
+        end
+    end
+endfunction
+
+function check_nan()
+    names = who_user(%f)
+    for name=names.'
+        check_nan_variable(name)
+    end
+endfunction
+
 
 // LOOP
 DELT=FINTIM/3000
@@ -59,6 +75,12 @@ times=[]
 pressures=[]
 flows=[]
 while TIME<FINTIM && RT==0 do
+    /*
+    if TIME > (0.0207600 - DELT*3.5) && TIME <= 0.0207600 then
+        disp("Checking for NaN at time", TIME)
+        check_nan()
+    end
+    */
     exec("amplifier_simulation.sce", -1)
     times=cat(1,times,[TIME])
     pressures=cat(1,pressures,[PC1,PC2,POUT1,POUT2, BETA])

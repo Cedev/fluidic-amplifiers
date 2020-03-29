@@ -128,6 +128,10 @@ FC1=(PAV+2*(QC1/BC)^2)*BC
 FC2=(PB2+2*(QC2*FACTOR/BC)^2)*BC
 FSY=PSY+2*QS2
 BETA=atan((FC1-FC2)/FSY)
+if isnan(BETA) then
+    disp("NaN BETA", TIME, BETA, FC1, FC2, FSY)
+    RT = 1
+end
 
 // END CALC FOR JET DEFLECTION
 
@@ -359,10 +363,15 @@ else
         CBL=(RE*QS/(SE+SO))^(1/3)
         UE=C1*QS*CBL*(1-(C2/(2*C1))^2*CBL^2)
         UE2=UE*UE
-     else
-         // VORTEX DRIVING VEL BASED ON ENTRAINMENT TURBULENT
-         SE1=1/(A1*SE+1)
-         UE2=2.25*SE1*(1-SE1)*(1-SE1)*QS2
+    else
+        // VORTEX DRIVING VEL BASED ON ENTRAINMENT TURBULENT
+        SE1=1/(A1*SE+1)
+        UE2=2.25*SE1*(1-SE1)*(1-SE1)*QS2
+
+        if isnan(SE1) then
+            disp("NaN SE1", TIME, SE1,A1,SE,UE2)
+            RT = 1
+        end
     end
 end
 
@@ -414,10 +423,17 @@ PDOUT2=(QO2/AREAR)^2
 QSprime=CONV*(1-PSY-QS*abs(QS)/CS^2)/(LS*B02)*CS
 QC1prime=CONV*(PC1-P1B-RC1*QC1*abs(QC1))/(LC*B02)*D1
 QC2prime=CONV*(PC2-P2B-RC2*QC2*abs(QC2))/(LC*B02)*D2
-LV=2*LGTHV*sqrt(RV1)
 QV1=(E>0)*QV1I
-ARGQV1=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
-QV1DOT=(E>0)*ARGQV1
+if E > 0 then
+    LV=2*LGTHV*sqrt(RV1)
+    QV1DOT=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
+else
+    QV1DOT = 0
+end
+if isnan(QV1DOT) then
+    disp("NaN QV1DOT", TIME, QV1DOT, ARGQV1, PV1, PB1, QV1, LV, RV1)
+    RT=1
+end
 Vprime=CONV*(QC1-QE1+QR1+QV1)/B02
 if ~isreal(Vprime) then
     disp("Unreal bubble volume change", Vprime,QC1,QE1,QR1,QV1,B02)
@@ -442,5 +458,5 @@ QO2=QO2+DELT*QO2prime
 LSP=2*SB
 if ~(LSP < SPL) then
     RT=1
-    disp("LSP >= SPL", V,THETA,R,QC1,QC2,QV1,QS)
+    disp("LSP >= SPL",TIME,V,THETA,R,QC1,QC2,QV1,QS)
 end

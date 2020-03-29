@@ -15,8 +15,8 @@ PRE1=1
 PRE2=1
 POST1=0
 POST2=1
-P1=0.5
-P2=0
+P1=0.275
+P2=0.0
 TRISE=1.5E-3
 
 exec("simulate_model.sce", -1)

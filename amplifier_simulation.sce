@@ -1,5 +1,22 @@
 function C=COMPAR(X1, X2)
-    C=1*(X2>=X1)
+    // Y = COMPAR (X1, X2)
+    // Y = 0    X1 < X2
+    // Y = 1    X1 >= X2
+    C=1*(X1>=X2)
+endfunction
+
+function Y=FCNSW(P, X1, X2, X3)
+    // Y = FCNSW (P, X1, X2, X3)
+    // Y = X1   P < 0
+    // Y = X2   P = 0
+    // Y = X3   P > 0
+    if P < 0 then
+        Y = X1
+    elseif P == 0 then
+        Y = X2
+    else
+        Y = X3
+    end
 endfunction
 
 if ~(TIME > 0) then
@@ -128,8 +145,8 @@ FC1=(PAV+2*(QC1/BC)^2)*BC
 FC2=(PB2+2*(QC2*FACTOR/BC)^2)*BC
 FSY=PSY+2*QS2
 BETA=atan((FC1-FC2)/FSY)
-if isnan(BETA) then
-    disp("NaN BETA", TIME, BETA, FC1, FC2, FSY)
+if ~is_finite_real(BETA) then
+    disp("Non-finite BETA", TIME, BETA, FC1, FC2, FSY)
     RT = 1
 end
 
@@ -174,7 +191,7 @@ function ba=bubble_area(r)
     // x = A2/CG
     // theta = acos((r-x)*CG/r)
     // theta = acos((r-A2/CG)*CG/r)
-    wedge_length = A2/CG
+    wedge_length = A2/CG      // w_l/cos(alpha) == (D+0.5)/cos(gamma)
     theta = acos(CG-A2*r^-1)
     wedge_area = 0.5*sin(BETA)*(D + 0.5)*wedge_length
     outside_area = 0.5*(r-wedge_length).*r.*sin(GAM+theta)
@@ -368,8 +385,8 @@ else
         SE1=1/(A1*SE+1)
         UE2=2.25*SE1*(1-SE1)*(1-SE1)*QS2
 
-        if isnan(SE1) then
-            disp("NaN SE1", TIME, SE1,A1,SE,UE2)
+        if ~is_finite_real(SE1) then
+            disp("Non-finite SE1", TIME, SE1,A1,SE,UE2)
             RT = 1
         end
     end
@@ -423,23 +440,24 @@ PDOUT2=(QO2/AREAR)^2
 QSprime=CONV*(1-PSY-QS*abs(QS)/CS^2)/(LS*B02)*CS
 QC1prime=CONV*(PC1-P1B-RC1*QC1*abs(QC1))/(LC*B02)*D1
 QC2prime=CONV*(PC2-P2B-RC2*QC2*abs(QC2))/(LC*B02)*D2
-QV1=(E>0)*QV1I
-if E > 0 then
-    LV=2*LGTHV*sqrt(RV1)
-    QV1DOT=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
-else
-    QV1DOT = 0
-end
-if isnan(QV1DOT) then
-    disp("NaN QV1DOT", TIME, QV1DOT, ARGQV1, PV1, PB1, QV1, LV, RV1)
+QV1=FCNSW(E,0,0,QV1I)
+LV=2*LGTHV*sqrt(RV1)
+ARGQV1=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
+QV1DOT=FCNSW(E,0,0,ARGQV1)
+if ~is_finite_real(QV1DOT) then
+    disp("Non-finite QV1DOT", TIME, QV1DOT, ARGQV1, PV1, PB1, QV1, LV, RV1)
     RT=1
 end
 Vprime=CONV*(QC1-QE1+QR1+QV1)/B02
-if ~isreal(Vprime) then
+if ~is_finite_real(Vprime) then
     disp("Unreal bubble volume change", Vprime,QC1,QE1,QR1,QV1,B02)
     RT=1
 end
-QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV*B02)
+QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV2*B02)
+if ~is_finite_real(QV2prime) then
+    disp("Non-finite QV2prime", TIME, QV2prime, PV2, PB2, RV2, QV2, LV, RV1, B02)
+    RT=1
+end
 QO1prime=CONV*(PD1+PB2-PO1-RO1*QO1*abs(QO1))/(LO*B02)
 QO2prime=CONV*(PO2-PD2-PB2-RO2*QO2*abs(QO2))/(LO*B02)
 

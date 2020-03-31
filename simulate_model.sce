@@ -1,7 +1,11 @@
+function fr=is_finite_real(x)
+    fr = isreal(x) && ~isinf(x) && ~isnan(x)
+endfunction
+
 function check_nan_variable(name)
     [obj, ierr] = evstr(name)
     if ierr == 0 then
-        if isnan(obj) then
+        if ~is_finite_real(obj) then
             disp("NaN variable", name, obj)
         end
     end

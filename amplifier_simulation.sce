@@ -437,29 +437,29 @@ PDOUT2=(QO2/AREAR)^2
 
 // START CALC OF INTEGRALS FOR VOLUME AND ALL FLOWS
 
-QSprime=CONV*(1-PSY-QS*abs(QS)/CS^2)/(LS*B02)*CS
-QC1prime=CONV*(PC1-P1B-RC1*QC1*abs(QC1))/(LC*B02)*D1
-QC2prime=CONV*(PC2-P2B-RC2*QC2*abs(QC2))/(LC*B02)*D2
+QSprime=CONV*(1-PSY-QS*abs(QS)/CS^2)/(LS*B02)*CS        // Eq 43
+QC1prime=CONV*(PC1-P1B-RC1*QC1*abs(QC1))/(LC*B02)*D1    // Eq 44
+QC2prime=CONV*(PC2-P2B-RC2*QC2*abs(QC2))/(LC*B02)*D2    // Eq 44
 QV1=FCNSW(E,0,0,QV1I)
 LV=2*LGTHV*sqrt(RV1)
-ARGQV1=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)
+ARGQV1=CONV*(PV1-PB1-RV1*QV1*abs(QV1))/(LV*B02)         // Eq 50
 QV1DOT=FCNSW(E,0,0,ARGQV1)
 if ~is_finite_real(QV1DOT) then
     disp("Non-finite QV1DOT", TIME, QV1DOT, ARGQV1, PV1, PB1, QV1, LV, RV1)
     RT=1
 end
-Vprime=CONV*(QC1-QE1+QR1+QV1)/B02
+Vprime=CONV*(QC1-QE1+QR1+QV1)/B02                       // Eq 4
 if ~is_finite_real(Vprime) then
     disp("Unreal bubble volume change", Vprime,QC1,QE1,QR1,QV1,B02)
     RT=1
 end
-QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV2*B02)
+QV2prime=CONV*(PV2-PB2-RV2*QV2*abs(QV2))/(LV2*B02)      // Eq 50
 if ~is_finite_real(QV2prime) then
     disp("Non-finite QV2prime", TIME, QV2prime, PV2, PB2, RV2, QV2, LV, RV1, B02)
     RT=1
 end
-QO1prime=CONV*(PD1+PB2-PO1-RO1*QO1*abs(QO1))/(LO*B02)
-QO2prime=CONV*(PO2-PD2-PB2-RO2*QO2*abs(QO2))/(LO*B02)
+QO1prime=CONV*(PD1+PB2-PO1-RO1*QO1*abs(QO1))/(LO*B02)   // Eq 58
+QO2prime=CONV*(PO2-PD2-PB2-RO2*QO2*abs(QO2))/(LO*B02)   // Eq 58
 
 // Not Milne integration :(
 QS=QS+DELT*QSprime
